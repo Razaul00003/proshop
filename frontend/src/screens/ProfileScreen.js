@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserDetails } from "../actions/userActions";
+import { getUserDetails, updateUserProfile } from "../actions/userActions";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 const ProfileScreen = ({ location, history }) => {
@@ -18,6 +18,9 @@ const ProfileScreen = ({ location, history }) => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
+  const { success } = userUpdateProfile;
 
   useEffect(() => {
     if (!userInfo) {
@@ -40,14 +43,16 @@ const ProfileScreen = ({ location, history }) => {
     }
 
     //dispatch update profile
+    dispatch(updateUserProfile({ id: user._id, name, email, password }));
   };
 
   return (
     <Row>
       <Col md={3}>
-        <h1>User Prolile </h1>
+        <h3>User Prolile </h3>
         {error && <Message variant="danger">{error}</Message>}
         {message && <Message variant="danger">{message}</Message>}
+        {success && <Message variant="success">Profile Updated!</Message>}
         {loading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name">
@@ -92,7 +97,7 @@ const ProfileScreen = ({ location, history }) => {
         </Form>
       </Col>
       <Col md={9}>
-        <h2>My orders</h2>
+        <h3>My orders</h3>
       </Col>
     </Row>
   );
