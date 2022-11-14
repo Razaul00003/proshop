@@ -1,59 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { getOrderDetails } from "../actions/orderActions";
 
 const OrderScreen = ({ match }) => {
-  const dispatch = useDispatch();
   const orderId = match.params.id;
+
+  const dispatch = useDispatch();
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
   if (!loading) {
+    //   Calculate prices
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
     };
+
     order.itemsPrice = addDecimals(
       order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
   }
 
   useEffect(() => {
-    if (!order || order._id !== orderId) {
-      dispatch(getOrderDetails(orderId));
-    }
-  }, [order, orderId]);
+    dispatch(getOrderDetails(orderId));
+  }, []);
 
   return loading ? (
     <Loader />
   ) : error ? (
-    <Message varinat="danger">{error}</Message>
+    <Message variant="danger">{error}</Message>
   ) : (
     <>
-      <h2>Order {order._id}</h2>
+      <h1>Order {order._id}</h1>
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h3>Shipping </h3>
+              <h2>Shipping</h2>
               <p>
-                <strong>Name:</strong> <span>{order.user.name}</span>
+                <strong>Name: </strong> {order.user.name}
               </p>
               <p>
+                <strong>Email: </strong>{" "}
                 <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
               </p>
-              <br />
-              <p className="py-3">
-                <strong> Address:</strong> {order.shippingAddress.address},{" "}
-                {order.shippingAddress.address} , {order.shippingAddress.city} ,
+              <p>
+                <strong>Address:</strong>
+                {order.shippingAddress.address}, {order.shippingAddress.city}{" "}
                 {order.shippingAddress.postalCode},{" "}
                 {order.shippingAddress.country}
               </p>
-              {order.isdelivered ? (
+              {order.isDelivered ? (
                 <Message variant="success">
                   Delivered on {order.deliveredAt}
                 </Message>
@@ -61,22 +62,24 @@ const OrderScreen = ({ match }) => {
                 <Message variant="danger">Not Delivered</Message>
               )}
             </ListGroup.Item>
+
             <ListGroup.Item>
-              <h3>Payment Method </h3>
+              <h2>Payment Method</h2>
               <p>
-                <strong>Method:</strong> {order.paymentMethod}
+                <strong>Method: </strong>
+                {order.paymentMethod}
               </p>
               {order.isPaid ? (
                 <Message variant="success">Paid on {order.paidAt}</Message>
               ) : (
-                <Message variant="danger">Not paid</Message>
+                <Message variant="danger">Not Paid</Message>
               )}
             </ListGroup.Item>
 
             <ListGroup.Item>
-              <h3>Order items</h3>
+              <h2>Order Items</h2>
               {order.orderItems.length === 0 ? (
-                <Message> Order is emtpty</Message>
+                <Message>Order is empty</Message>
               ) : (
                 <ListGroup variant="flush">
                   {order.orderItems.map((item, index) => (
@@ -96,8 +99,7 @@ const OrderScreen = ({ match }) => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} x ${item.price} =
-                          {(item.qty * item.price).toFixed(2)}
+                          {item.qty} x ${item.price} = ${item.qty * item.price}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -109,34 +111,35 @@ const OrderScreen = ({ match }) => {
         </Col>
         <Col md={4}>
           <Card>
-            <ListGroup.Item variant="flush">
-              <h3>Order Summary</h3>
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <Row>
-                <Col>Items </Col>
-                <Col> ${order.itemsPrice} </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Shipping </Col>
-                <Col> ${order.shippingPrice} </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Tax</Col>
-                <Col> ${order.taxPrice} </Col>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <Col>Total</Col>
-                <Col> ${order.totalPrice.toFixed(2)} </Col>
-              </Row>
-            </ListGroup.Item>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Items</Col>
+                  <Col>${order.itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping</Col>
+                  <Col>${order.shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax</Col>
+                  <Col>${order.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total</Col>
+                  <Col>${order.totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
           </Card>
         </Col>
       </Row>
