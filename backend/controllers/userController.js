@@ -73,7 +73,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
-  res.send("profile api success");
 });
 
 // @desc    update user profile
@@ -102,4 +101,13 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-export { authUser, getUserProfile, registerUser, updateUserProfile };
+
+// @desc    get All users
+// @route   POST /api/users
+// @access  private/Admin
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+export { authUser, getUserProfile, registerUser, updateUserProfile, getUsers };
