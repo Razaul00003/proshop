@@ -75,4 +75,3 @@ Technologies used in the project:
 *   Multer
 *   Morgan
 *   Heroku
-README GEN
