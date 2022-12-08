@@ -6,7 +6,7 @@
 
 <h2>🚀 Demo</h2>
 
-[https://proshopmernfull.herokuapp.com/](https://proshopmernfull.herokuapp.com/)
+[https://proshop-44w5.onrender.com](https://proshop-44w5.onrender.com/)
 
 <h2>Project Screenshots:</h2>
 
